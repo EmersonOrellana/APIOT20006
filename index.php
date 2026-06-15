@@ -8,7 +8,7 @@ require 'conexion.php';
 
 $app = AppFactory::create();
 
-$app->setBasePath("/APIOT20006");
+$app->setBasePath("");
 
 $app->get('/doctores', function (Request $request, Response $response) {
     $db = getConexion();
