@@ -12,7 +12,7 @@ $app->setBasePath("");
 
 $app->get('/doctores', function (Request $request, Response $response) {
     $db = getConexion();
-    $sql = "SELECT * FROM Doctores";
+    $sql = "SELECT * FROM doctores";
     $stmt = $db->query($sql);
     $doctores = $stmt->fetchAll(PDO::FETCH_OBJ);
     $response->getBody()->write(json_encode($doctores));
@@ -22,7 +22,7 @@ $app->get('/doctores', function (Request $request, Response $response) {
 $app->post('/doctores/nuevo', function (Request $request, Response $response) {
     $data = json_decode($request->getBody());
     $db = getConexion();
-    $sql = "INSERT INTO Doctores (IdDoctor, NombresDoctor, ApellidosDoctor, Especialidad, TurnoAtencion, PacientesMinDiarios, Sueldo, IdHospital) VALUES (:id, :nom, :ape, :esp, :tur, :pac, :sue, :idh)";
+    $sql = "INSERT INTO doctores (IdDoctor, NombresDoctor, ApellidosDoctor, Especialidad, TurnoAtencion, PacientesMinDiarios, Sueldo, IdHospital) VALUES (:id, :nom, :ape, :esp, :tur, :pac, :sue, :idh)";
     $stmt = $db->prepare($sql);
     $stmt->execute([
         ":id" => $data->IdDoctor,
@@ -41,7 +41,7 @@ $app->post('/doctores/nuevo', function (Request $request, Response $response) {
 
 $app->get('/hospitales', function (Request $request, Response $response) {
     $db = getConexion();
-    $sql = "SELECT * FROM Hospitales";
+    $sql = "SELECT * FROM hospitales";
     $stmt = $db->query($sql);
     $hospitales = $stmt->fetchAll(PDO::FETCH_OBJ);
     $response->getBody()->write(json_encode($hospitales));
