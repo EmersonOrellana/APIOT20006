@@ -1,6 +1,6 @@
 <?php
 function getConexion() {
-    $host = "1p1ljt.h.filess.io";
+    $host = "lp1ljt.h.filess.io";
     $db = "control_doc_hosp_scenedugso";
     $user = "control_doc_hosp_scenedugso";
     $pass = "f5b6f02f16d969e3d0beeb8e28e8662b0eb96e71";
