@@ -22,10 +22,12 @@ $app->get('/doctores', function (Request $request, Response $response) {
 $app->post('/doctores/nuevo', function (Request $request, Response $response) {
     $data = json_decode($request->getBody());
     $db = getConexion();
-    $sql = "INSERT INTO doctores (IdDoctor, NombresDoctor, ApellidosDoctor, Especialidad, TurnoAtencion, PacientesMinDiarios, Sueldo, IdHospital) VALUES (:id, :nom, :ape, :esp, :tur, :pac, :sue, :idh)";
+    
+    $sql = "INSERT INTO doctores (IdDoctor, NombresDoctor, ApellidosDoctor, Especialidad, TurnoAtencion, PacientesMinDiarios, Sueldo, IdHospital) 
+            VALUES (:id, :nom, :ape, :esp, :tur, :pac, :sue, :idh)";
     $stmt = $db->prepare($sql);
-    $stmt->execute([
-        ":id" => $data->IdDoctor,
+    $resultado = $stmt->execute([
+        ":id"  => $data->IdDoctor,
         ":nom" => $data->NombresDoctor,
         ":ape" => $data->ApellidosDoctor,
         ":esp" => $data->Especialidad,
@@ -34,8 +36,14 @@ $app->post('/doctores/nuevo', function (Request $request, Response $response) {
         ":sue" => $data->Sueldo,
         ":idh" => $data->IdHospital
     ]);
-    $response->getBody()->write(json_encode(["mensaje" => "Doctor guardado"]));
-    return $response;
+
+    if ($resultado && $stmt->rowCount() > 0) {
+        $response->getBody()->write(json_encode(["mensaje" => "Doctor guardado"]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    } else {
+        $response->getBody()->write(json_encode(["error" => "No se pudo guardar, verifica el ID Hospital"]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    }
 });
 
 
