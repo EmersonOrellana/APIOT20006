@@ -57,22 +57,26 @@ $app->get('/hospitales', function (Request $request, Response $response) {
 });
 
 $app->post('/hospitales/nuevo', function (Request $request, Response $response) {
-    $data = json_decode($request->getBody());
+    $data = json_decode($request->getBody()->getContents());
     $db = getConexion();
     
-    $sql = "INSERT INTO hospitales (IdHospital, NomHospital, CapacidadAtencion, Especialidades) 
-            VALUES (:id, :nom, :cap, :esp)";
-    
-    $stmt = $db->prepare($sql);
-    $stmt->execute([
-        ":id"  => $data->IdHospital,
-        ":nom" => $data->NomHospital,
-        ":cap" => $data->CapacidadAtencion,
-        ":esp" => $data->Especialidades
-    ]);
-    
-    $response->getBody()->write(json_encode(["mensaje" => "Hospital guardado"]));
-    return $response->withHeader('Content-Type', 'application/json');
+    try {
+        $sql = "INSERT INTO hospitales (IdHospital, NomHospital, CapacidadAtencion, Especialidades) 
+                VALUES (:id, :nom, :cap, :esp)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            ":id"  => $data->IdHospital,
+            ":nom" => $data->NomHospital,
+            ":cap" => $data->CapacidadAtencion,
+            ":esp" => $data->Especialidades
+        ]);
+        
+        $response->getBody()->write(json_encode(["mensaje" => "Hospital guardado"]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+    } catch (Exception $e) {
+        $response->getBody()->write(json_encode(["error" => $e->getMessage()]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+    }
 });
 
 $app->get('/hospitales/{id}', function (Request $request, Response $response, array $args) {
