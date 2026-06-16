@@ -25,24 +25,18 @@ $app->get('/doctores', function (Request $request, Response $response) {
 
 $app->post('/doctores/nuevo', function (Request $request, Response $response) {
     $data = json_decode($request->getBody()->getContents());
-    
     if (!$data) return jsonResponse($response, ["error" => "JSON inválido"], 400);
 
     $db = getConexion();
-    $sql = "INSERT INTO doctores (IdDoctor, NombresDoctor, ApellidosDoctor, Especialidad, TurnoAtencion, PacientesMinDiarios, Sueldo, IdHospital) 
-            VALUES (:id, :nom, :ape, :esp, :tur, :pac, :sue, :idh)";
-    $stmt = $db->prepare($sql);
-    $stmt->execute([
-        ":id"  => $data->IdDoctor ?? '',
-        ":nom" => $data->NombresDoctor ?? '',
-        ":ape" => $data->ApellidosDoctor ?? '',
-        ":esp" => $data->Especialidad ?? '',
-        ":tur" => $data->TurnoAtencion ?? '',
-        ":pac" => $data->PacientesMinDiarios ?? 0,
-        ":sue" => $data->Sueldo ?? 0,
-        ":idh" => $data->IdHospital ?? ''
-    ]);
-    return jsonResponse($response, ["mensaje" => "Doctor guardado"]);
+    try {
+        $sql = "INSERT INTO doctores (...) VALUES (...)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([...]);
+        return jsonResponse($response, ["mensaje" => "Doctor guardado"]);
+    } catch (PDOException $e) {
+
+        return jsonResponse($response, ["error" => "Error en base de datos: " . $e->getMessage()], 500);
+    }
 });
 
 
